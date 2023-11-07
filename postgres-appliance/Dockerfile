@@ -68,6 +68,26 @@ ENV POSTGIS_VERSION=3.4 \
     PG_PERMISSIONS_COMMIT=314b9359e3d77c0b2ef7dbbde97fa4be80e31925 \
     PG_TM_AUX_COMMIT=51cf42f6043608919802fcc48458471d0ea3a127
 
+# PGroonga install
+ENV PGROONGA_VERSION=3.1.1-1
+RUN \
+    apt update && \
+    apt install -y -V wget && \
+    wget https://apache.jfrog.io/artifactory/arrow/debian/apache-arrow-apt-source-latest-bookworm.deb && \
+    apt install -y -V ./apache-arrow-apt-source-latest-bookworm.deb && \
+    rm apache-arrow-apt-source-latest-bookworm.deb && \
+    wget https://packages.groonga.org/debian/groonga-apt-source-latest-bookworm.deb && \
+    apt install -y -V ./groonga-apt-source-latest-bookworm.deb && \
+    rm groonga-apt-source-latest-bookworm.deb && \
+    apt update && \
+    apt install -y -V \
+    postgresql-15-pgdg-pgroonga=${PGROONGA_VERSION} \
+    groonga-normalizer-mysql \
+    groonga-token-filter-stem \
+    groonga-tokenizer-mecab && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /builddeps
 RUN bash base.sh
 
